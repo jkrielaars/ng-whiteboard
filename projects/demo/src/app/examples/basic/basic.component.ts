@@ -43,6 +43,9 @@ export class BasicComponent {
   redo() {
     this.whiteboardService.redo();
   }
+  reset() {
+    this.whiteboardService.reset();
+  }
 
   addImage(fileInput: EventTarget | null) {
     if (fileInput) {

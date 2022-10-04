@@ -1,5 +1,5 @@
 <div class="demo">
-    <ng-whiteboard [data]="data" [persistenceId]="'basic'" [strokeColor]="color" [fill]="color" [backgroundColor]="backgroundColor"
+    <ng-whiteboard [persistenceId]="'basic'" [strokeColor]="color" [fill]="color" [backgroundColor]="backgroundColor"
         [strokeWidth]="size" (save)="onSave($event)"></ng-whiteboard>
     <div class="tools">
         <div class="size-dropdown">
@@ -44,6 +44,7 @@
         </div>
 
         <button (click)="erase()">Erase</button>
+        <button (click)="reset()">Reset</button>
         <button (click)="undo()">Undo</button>
         <button (click)="redo()">Redo</button>
 

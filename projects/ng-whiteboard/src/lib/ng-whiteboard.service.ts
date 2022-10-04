@@ -11,6 +11,7 @@ export class NgWhiteboardService {
   private saveSvgMethodCallSource = new Subject<{ name: string; format: formatTypes }>();
   private undoSvgMethodCallSource = new Subject<void>();
   private redoSvgMethodCallSource = new Subject<void>();
+  private resetSvgMethodCalled = new Subject<void>();
   private addImageMethodCallSource = new Subject<IAddImage>();
 
   // Observable string streams
@@ -18,6 +19,8 @@ export class NgWhiteboardService {
   saveSvgMethodCalled$ = this.saveSvgMethodCallSource.asObservable();
   undoSvgMethodCalled$ = this.undoSvgMethodCallSource.asObservable();
   redoSvgMethodCalled$ = this.redoSvgMethodCallSource.asObservable();
+  resetSvgMethodCalled$ = this.resetSvgMethodCalled.asObservable();
+
   addImageMethodCalled$ = this.addImageMethodCallSource.asObservable();
 
   // Service message commands
@@ -32,6 +35,9 @@ export class NgWhiteboardService {
   }
   public redo(): void {
     this.redoSvgMethodCallSource.next();
+  }
+  public reset(): void {
+    this.resetSvgMethodCalled.next();
   }
   public addImage(image: string | ArrayBuffer, x?: number, y?: number): void {
     this.addImageMethodCallSource.next({ image, x, y });

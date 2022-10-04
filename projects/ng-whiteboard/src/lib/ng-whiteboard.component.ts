@@ -78,6 +78,7 @@ export class NgWhiteboardComponent implements OnInit, OnChanges, AfterViewInit, 
 
   private _subscriptionList: Subscription[] = [];
 
+  private _initialData: WhiteboardElement[] = [];
   private undoStack: WhiteboardElement[][] = [];
   private redoStack: WhiteboardElement[][] = [];
   private _selectedTool: ToolsEnum = ToolsEnum.BRUSH;
@@ -102,6 +103,7 @@ export class NgWhiteboardComponent implements OnInit, OnChanges, AfterViewInit, 
   ngOnInit(): void {
     this._initInputsFromOptions(this.options);
     this._initObservables();
+    this._initialData = JSON.parse(JSON.stringify(this.data));
     if (this.persistenceId) {
       const stored = JSON.parse(localStorage.getItem(`whitebaord_${this.persistenceId}`)||'null');
       if (stored) {
@@ -214,12 +216,15 @@ export class NgWhiteboardComponent implements OnInit, OnChanges, AfterViewInit, 
       this.whiteboardService.addImageMethodCalled$.subscribe((image) => this.handleDrawImage(image))
     );
     this._subscriptionList.push(this.whiteboardService.eraseSvgMethodCalled$.subscribe(() => this._clearSvg()));
+    this._subscriptionList.push(this.whiteboardService.resetSvgMethodCalled$.subscribe(() => this._reset()));
     this._subscriptionList.push(this.whiteboardService.undoSvgMethodCalled$.subscribe(() => this.undoDraw()));
     this._subscriptionList.push(this.whiteboardService.redoSvgMethodCalled$.subscribe(() => this.redoDraw()));
     this._subscriptionList.push(fromEvent(window, 'resize').subscribe(() => this.resizeScreen()));
     this._subscriptionList.push(
       this._data.pipe(skip(1)).subscribe((data) => {
-        this.updateLocalStorage();
+        let stored = JSON.parse(localStorage.getItem(`whitebaord_${this.persistenceId}`)||'');
+        stored.data = data;
+        localStorage.setItem(`whitebaord_${this.persistenceId}`, JSON.stringify(stored));
         this.dataChange.emit(data);
       })
     );
@@ -730,7 +735,11 @@ export class NgWhiteboardComponent implements OnInit, OnChanges, AfterViewInit, 
     }
     const currentState = this.undoStack.pop();
     this.redoStack.push(currentState as WhiteboardElement[]);
-    this.data = this.undoStack[this.undoStack.length - 1] || [];
+    if(this.undoStack.length){
+      this.data = JSON.parse(JSON.stringify(this.undoStack[this.undoStack.length-1]));
+    } else {
+      this.data = JSON.parse(JSON.stringify(this._initialData)) || [];
+    }
     this.updateLocalStorage();
     this.undo.emit();
   }
@@ -746,6 +755,12 @@ export class NgWhiteboardComponent implements OnInit, OnChanges, AfterViewInit, 
   }
   private _pushToUndo() {
     this.undoStack.push(JSON.parse(JSON.stringify(this.data)));
+    this.updateLocalStorage();
+  }
+  private _reset(): void {
+    this.undoStack = [];
+    this.redoStack = [];
+    this.data = this._initialData;
     this.updateLocalStorage();
   }
   private updateLocalStorage(): void {
