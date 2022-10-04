@@ -1,5 +1,5 @@
 <div class="demo">
-    <ng-whiteboard [data]="data" [strokeColor]="color" [fill]="color" [backgroundColor]="backgroundColor"
+    <ng-whiteboard [data]="data" [persistenceId]="'basic'" [strokeColor]="color" [fill]="color" [backgroundColor]="backgroundColor"
         [strokeWidth]="size" (save)="onSave($event)"></ng-whiteboard>
     <div class="tools">
         <div class="size-dropdown">

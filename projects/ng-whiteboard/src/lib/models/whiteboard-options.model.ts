@@ -25,4 +25,5 @@ export interface WhiteboardOptions {
   enableGrid?: boolean;
   gridSize?: number;
   snapToGrid?: boolean;
+  persistenceId?: string;
 }
