@@ -758,11 +758,9 @@ export class NgWhiteboardComponent implements OnInit, OnChanges, AfterViewInit, 
     this.updateLocalStorage();
   }
   private _reset(): void {
-    console.log('do reset');
     this.undoStack = [];
     this.redoStack = [];
     this.data = JSON.parse(JSON.stringify(this._initialData));
-    console.log(this._initialData);
     this.updateLocalStorage();
   }
   private updateLocalStorage(): void {
