@@ -222,7 +222,7 @@ export class NgWhiteboardComponent implements OnInit, OnChanges, AfterViewInit, 
     this._subscriptionList.push(fromEvent(window, 'resize').subscribe(() => this.resizeScreen()));
     this._subscriptionList.push(
       this._data.pipe(skip(1)).subscribe((data) => {
-        let stored = JSON.parse(localStorage.getItem(`whitebaord_${this.persistenceId}`)||'');
+        let stored = JSON.parse(localStorage.getItem(`whitebaord_${this.persistenceId}`)||'null');
         stored.data = data;
         localStorage.setItem(`whitebaord_${this.persistenceId}`, JSON.stringify(stored));
         this.dataChange.emit(data);
